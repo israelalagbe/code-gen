@@ -1,7 +1,7 @@
 import { Service } from 'typedi';
 import {{.ModelName}}Entity from '../entities/{{.HypenCaseName}}.entity';
 import { {{.ModelName}}Dto } from '../dto/{{.HypenCaseName}}.dto';
-import {{.ModelName}}Model from '../models/{{.HypenCaseName}}.model';
+import {{.ModelName}}Model from '../../models/{{.HypenCaseName}}.model';
 import { Mapper } from '@shared/ddd/mapper.interface';
 
 @Service()

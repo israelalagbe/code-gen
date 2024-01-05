@@ -1,0 +1,51 @@
+import { randomUUID } from 'node:crypto';
+import { Entity } from '@shared/ddd/entity.base';
+
+export interface I{{.ModelName}} {
+  id: string;
+  {{- range .Properties}}
+  {{.Name}}: {{.Type}};
+  {{- end}}
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+type ICreate{{.ModelName}} = Omit<I{{.ModelName}}, 'id' | 'createdAt' | 'updatedAt'>;
+
+export default class {{.ModelName}}Entity extends Entity<I{{.ModelName}}> {
+  /**
+   * Factory to create a new entity.
+   * Associated a new ID and creation dates.
+   */
+  static create(props: ICreate{{.ModelName}}): {{.ModelName}}Entity {
+    const id = randomUUID();
+
+    return new {{.ModelName}}Entity({
+      id: id,
+      {{- range .Properties}}
+      {{.Name}}: props.{{.Name}},
+      {{- end}} 
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    });
+  }
+
+  get id(): string {
+    return this.props.id;
+  }
+
+  {{- range .Properties}}
+  
+  get {{.Name}}(): {{.Type}} {
+    return this.props.{{.Name}};
+  }
+  {{- end}}
+
+  get createdAt(): Date {
+    return this.props.createdAt;
+  }
+
+  get updatedAt(): Date {
+    return this.props.updatedAt;
+  }
+}
