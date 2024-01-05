@@ -1,4 +1,16 @@
+import { Service } from 'typedi';
+import { Create{{.ModelName}}Dto } from '../data/dto/{{.HypenCaseName}}.dto';
+import {{.ModelName}}Entity from '../data/entities/{{.HypenCaseName}}.entity';
+import { Profile } from '@shared/types';
+
 @Service()
 export default class {{.ModelName}}Service {
-
+  createFromDto(emailConfigDTO: Create{{.ModelName}}Dto, author: Profile): {{.ModelName}}Entity {
+    const entity = {{.ModelName}}Entity.create({
+      {{- range .Properties}}
+      {{.Name}}: emailConfigDTO.{{.Name}},
+      {{- end}}
+    });
+    return entity;
+  }
 }

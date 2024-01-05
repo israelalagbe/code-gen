@@ -13,7 +13,7 @@ export default class {{.ModelName}}Repository implements RepositoryPort<{{.Model
       message: 'Fetching all {{.SentenceCaseName}}s',
     });
 
-    const records = await {{.ModelName}}.findAll();
+    const records = await {{.ModelName}}Model.findAll();
 
     const entities = records.map(record => this.{{.LowerModelName}}Mapper.toDomain(record));
 
@@ -45,7 +45,6 @@ export default class {{.ModelName}}Repository implements RepositoryPort<{{.Model
 
     log.info({
       message: `Found {{.SentenceCaseName}} ${id}.`,
-      entity,
     });
 
     return entity;
@@ -66,7 +65,6 @@ export default class {{.ModelName}}Repository implements RepositoryPort<{{.Model
 
     log.info({
       message: `Inserted {{.SentenceCaseName}} ${entity.id}.`,
-      {{.SentenceCaseName}}Record,
     });
   }
 
@@ -85,7 +83,29 @@ export default class {{.ModelName}}Repository implements RepositoryPort<{{.Model
 
     log.info({
       message: `Updated {{.SentenceCaseName}} ${entity.id}.`,
-      {{.LowerModelName}}Record,
     });
+  }
+
+  /**
+   * Saves a {{.ModelName}} record to the DB.
+   */
+  async save(entity: {{.ModelName}}Entity): Promise<void> {
+    if (this.exists(entity.id)) {
+      return await this.update(entity);
+    }
+    else {
+      return await this.insert(entity);
+    }
+  }
+
+  /**
+   * Checks if a {{.ModelName}} exists in the DB.
+  */
+  public async exists (id: string): Promise<boolean> {
+    const count = await {{.ModelName}}Model.count({
+      where: { id },
+    });
+
+    return count > 0;
   }
 }

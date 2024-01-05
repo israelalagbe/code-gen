@@ -1,18 +1,17 @@
 import { Body, Get, JsonController, NotFoundError, Param, Patch, Post, UseBefore } from 'routing-controllers';
 import { Validate, RequestUser } from '@letsdeel/employee-tribe-common';
 import { Service } from 'typedi';
-import { Create{{.ModelName}}Dto, {{.ModelName}}Dto, Update{{.ModelName}}Dto, create{{.ModelName}}Schema, update{{.ModelName}}Schema } from '../data/dto/{{.LowerModelName}}.dto';
-import {{.ModelName}}Factory from '../data/factories/{{.LowerModelName}}.factory';
-import {{.ModelName}}Mapper from '../data/mappers/{{.LowerModelName}}.mapper';
-import {{.ModelName}}Repository from '../data/repositories/{{.LowerModelName}}.repository';
-import { MobilityError } from '@shared/errors';
+import { Create{{.ModelName}}Dto, {{.ModelName}}Dto, Update{{.ModelName}}Dto, create{{.ModelName}}Schema, update{{.ModelName}}Schema } from '../data/dto/{{.HypenCaseName}}.dto';
+import {{.ModelName}}Service from '../services/{{.HypenCaseName}}.service';
+import {{.ModelName}}Mapper from '../data/mappers/{{.HypenCaseName}}.mapper';
+import {{.ModelName}}Repository from '../data/repositories/{{.HypenCaseName}}.repository';
 import { Profile } from '@shared/types';
 import { AllowAdmin } from '@app/middlewares';
 
 @JsonController('/admin/{{.HypenCaseName}}s')
 @Service()
 export default class {{.ModelName}}Controller {
-  constructor(private {{.LowerModelName}}Repository: {{.ModelName}}Repository, private {{.LowerModelName}}Factory: {{.ModelName}}Factory, private {{.LowerModelName}}Mapper: {{.ModelName}}Mapper) {}
+  constructor(private {{.LowerModelName}}Repository: {{.ModelName}}Repository, private {{.LowerModelName}}Service: {{.ModelName}}Service, private {{.LowerModelName}}Mapper: {{.ModelName}}Mapper) {}
 
   @Get('/')
   @UseBefore(AllowAdmin())
@@ -25,14 +24,9 @@ export default class {{.ModelName}}Controller {
   @Post('/')
   @UseBefore(AllowAdmin(), Validate(create{{.ModelName}}Schema))
   async create(@RequestUser() user: Profile, @Body() payload: Create{{.ModelName}}Dto): Promise<Required<{{.ModelName}}Dto>> {
-    const {{.LowerModelName}} = await this.{{.LowerModelName}}Repository.findOneByTemplateKey(payload.templateKey);
-    if ({{.LowerModelName}}) {
-      throw new MobilityError(`Email {{.LowerModelName}} ${payload.templateKey} already exists.`, 409);
-    }
+    const entity = this.{{.LowerModelName}}Service.createFromDto(payload, user);
 
-    const entity = this.{{.LowerModelName}}Factory.createFromDto(payload, user);
-
-    await this.{{.LowerModelName}}Repository.insert(entity);
+    await this.{{.LowerModelName}}Repository.save(entity);
 
     return this.{{.LowerModelName}}Mapper.toResponse(entity);
   }
@@ -48,7 +42,7 @@ export default class {{.ModelName}}Controller {
 
     {{.LowerModelName}}.set(payload);
 
-    await this.{{.LowerModelName}}Repository.update({{.LowerModelName}});
+    await this.{{.LowerModelName}}Repository.save({{.LowerModelName}});
 
     return this.{{.LowerModelName}}Mapper.toResponse({{.LowerModelName}});
   }
