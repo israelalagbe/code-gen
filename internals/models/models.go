@@ -24,13 +24,12 @@ const (
 	MODE_APPEND
 )
 
-func NewQuestionModel() *QuestionModel {
+func NewQuestionModel(path string) *QuestionModel {
 	items := []Item{
-		{Name: "Create", Path: "create.go", Included: true},
-		{Name: "Update", Path: "update.go", Included: true},
+		{Name: "repositories", Included: true, Path: "repositories/{{.TableName}}.go"},
 	}
 
-	return &QuestionModel{Items: items, Path: "./", Properties: []Property{}}
+	return &QuestionModel{Items: items, Path: path, Properties: []Property{}}
 }
 
 func hello() {}

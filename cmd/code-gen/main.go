@@ -2,6 +2,8 @@ package main
 
 import (
 	"fmt"
+	"path"
+	"strings"
 
 	"github.com/burl/inquire"
 	"github.com/israelalagbe/code-gen/internals/libs"
@@ -11,8 +13,14 @@ import (
 )
 
 func main() {
+
+	defaultAppDir, targetDir := libs.GetAppDirectoryInfo()
+
+	fmt.Println("Default App Dir:", defaultAppDir)
+	fmt.Println("Target Dir:", targetDir)
+
 	var questions *inquire.Questions = nil
-	questionModel := models.NewQuestionModel()
+	questionModel := models.NewQuestionModel(targetDir)
 
 	questions = inquire.Query()
 	questions.Input(&questionModel.TableName, "Table name", validations.Required)
@@ -26,16 +34,13 @@ func main() {
 
 	questionModel.Properties = utils.ParseFields(fields)
 
-	for _, item := range questionModel.Items {
+	for index, item := range questionModel.Items {
 		questions = inquire.Query()
 		questions.YesNo(&item.Included, "Include "+item.Name)
 		questions.Exec()
 
-		if item.Included {
-			questions = inquire.Query()
-			questions.Input(&item.Path, "Path to "+item.Name+" file", validations.Required)
-			questions.Exec()
-		}
+		item.Path = strings.Replace(item.Path, "{{.TableName}}", questionModel.TableName, 1)
+		questionModel.Items[index] = item
 	}
 
 	for _, item := range questionModel.Items {
@@ -43,13 +48,21 @@ func main() {
 			continue
 		}
 
-		itemPath := questionModel.Path + item.Path
+		absFilePath := path.Join(targetDir, item.Path)
 
-		if libs.FileExists(itemPath) {
+		if libs.FileExists(absFilePath) {
 			questions = inquire.Query()
-			questions.YesNo(&item.Included, "File "+itemPath+" already exists. Overwrite?")
+			questions.YesNo(&item.Included, "File "+item.Path+" already exists. Overwrite?")
 			questions.Exec()
 		}
+
+		if !libs.FileExists(path.Dir(absFilePath)) {
+			libs.CreateDirectory(path.Dir(absFilePath))
+		}
+
+		result := libs.RenderTemplate(path.Join("templates", item.Name+".txt"), questionModel)
+
+		libs.WriteFile(path.Join(targetDir, item.Path), result)
 	}
 
 	fmt.Println(questionModel)
