@@ -27,6 +27,7 @@ const (
 type TemplateRenderData struct {
 	TableName             string
 	ModelName             string
+	LowerModelName        string
 	SnakeCaseName         string
 	HypenCaseName         string
 	SentenceCaseName      string
@@ -48,6 +49,7 @@ func NewQuestionModel(path string) *QuestionModel {
 		{Name: "models", Included: true, Path: "models/{{.ModelName}}.model.ts"},
 		{Name: "mappers", Included: true, Path: "data/mappers/{{.ModelName}}.mapper.ts"},
 		{Name: "entities", Included: true, Path: "data/entities/{{.ModelName}}.entity.ts"},
+		{Name: "dto", Included: true, Path: "data/dto/{{.ModelName}}.dto.ts"},
 	}
 
 	return &QuestionModel{Items: items, Path: path, Properties: []Property{}}

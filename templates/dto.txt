@@ -1,0 +1,12 @@
+import { z } from 'zod';
+
+export const {{.LowerModelName}}Schema = z.object({
+  id: z.string(),
+  {{- range .Properties}}
+  {{.Name}}: z.{{.Type}}(),
+  {{- end}} 
+  createdAt: z.string().datetime(),
+  updatedAt: z.string().datetime(),
+});
+
+export type {{.ModelName}}Dto = z.infer<typeof {{.LowerModelName}}Schema>;
