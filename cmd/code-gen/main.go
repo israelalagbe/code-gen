@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/burl/inquire"
+	"github.com/israelalagbe/code-gen/internals/libs"
 	"github.com/israelalagbe/code-gen/internals/models"
 	"github.com/israelalagbe/code-gen/internals/utils"
 	"github.com/israelalagbe/code-gen/validations"
@@ -25,25 +26,6 @@ func main() {
 
 	questionModel.Properties = utils.ParseFields(fields)
 
-	// for {
-	// 	addAnotherProperty := false
-	// 	questions = inquire.Query()
-
-	// 	property := models.Property{}
-
-	// 	questions.Input(&property.Name, "Property name", validations.Required)
-	// 	questions.Input(&property.Type, "Property type", validations.Required)
-
-	// 	questions.YesNo(&addAnotherProperty, "Add another property?")
-	// 	questions.Exec()
-
-	// 	if !addAnotherProperty {
-	// 		break
-	// 	}
-
-	// 	questionModel.Properties = append(questionModel.Properties, models.Property{})
-	// }
-
 	for _, item := range questionModel.Items {
 		questions = inquire.Query()
 		questions.YesNo(&item.Included, "Include "+item.Name)
@@ -52,6 +34,20 @@ func main() {
 		if item.Included {
 			questions = inquire.Query()
 			questions.Input(&item.Path, "Path to "+item.Name+" file", validations.Required)
+			questions.Exec()
+		}
+	}
+
+	for _, item := range questionModel.Items {
+		if !item.Included {
+			continue
+		}
+
+		itemPath := questionModel.Path + item.Path
+
+		if libs.FileExists(itemPath) {
+			questions = inquire.Query()
+			questions.YesNo(&item.Included, "File "+itemPath+" already exists. Overwrite?")
 			questions.Exec()
 		}
 	}
