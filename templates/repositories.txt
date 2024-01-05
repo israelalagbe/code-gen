@@ -72,16 +72,4 @@ export default class {{.ModelName}}Repository implements RepositoryPort<{{.Model
       {{.LowerModelName}}Record,
     });
   }
-
-  /**
-   * Check if a name already exists.
-   */
-  async existsByName(name: string): Promise<boolean> {
-    const {{.LowerModelName}}Record = await {{.ModelName}}Model.findOne({
-      attributes: ['id'],
-      where: { name },
-    });
-
-    return !!{{.LowerModelName}}Record;
-  }
 }
