@@ -1,77 +1,75 @@
 import { Service } from 'typedi';
-import FormMapper from '../mappers/forms.mapper';
-import FormEntity from '../entities/form.entity';
-import FormModel from '@app/sequelize/models/form.model';
+import {{.ModelName}}Mapper from '../mappers/{{.HypenCaseName}}.mapper';
+import {{.ModelName}}Entity from '../entities/{{.HypenCaseName}}.entity';
+import {{.ModelName}}Model from '../../models/{{.HypenCaseName}}.model';
 import { RepositoryPort } from '@shared/ddd/repository.port';
 
 @Service()
-export default class FormRepository implements RepositoryPort<FormEntity> {
-  constructor(private formMapper: FormMapper) {}
+export default class {{.ModelName}}Repository implements RepositoryPort<{{.ModelName}}Entity> {
+  constructor(private {{.LowerModelName}}Mapper: {{.ModelName}}Mapper) {}
 
-  /** Finding a form aggregate from its main ID */
-  async findOneById(id: string): Promise<FormEntity | null> {
+  async findOneById(id: string): Promise<{{.ModelName}}Entity | null> {
     log.info({
-      message: `Finding form ${id}.`,
+      message: `Finding {{.ModelName}} ${id}.`,
     });
 
-    const record = await FormModel.findOne({
-      attributes: this.formAttributes,
+    const record = await {{.ModelName}}Model.findOne({
       where: { id },
     });
 
     if (!record) {
       log.info({
-        message: `Form ${id} not found.`,
+        message: `{{.ModelName}} ${id} not found.`,
       });
 
       return null;
     }
 
-    const form = this.formMapper.toDomain(record);
+    const entity = this.{{.LowerModelName}}Mapper.toDomain(record);
 
     log.info({
-      message: `Found form ${id}.`,
-      form,
+      message: `Found {{.ModelName}} ${id}.`,
+      entity,
     });
 
-    return form;
+    return entity;
   }
 
   /**
-   * Insert a form into the DB.
+   * Insert a {{.ModelName}} into the DB.
    */
-  async insert(entity: FormEntity): Promise<void> {
-    const formRecord = this.formMapper.toPersistence(entity);
+  async insert(entity: {{.ModelName}}Entity): Promise<void> {
+    const {{.LowerModelName}}Record = this.{{.LowerModelName}}Mapper.toPersistence(entity);
 
     log.info({
-      message: `Inserting form ${entity.id}.`,
+      message: `Inserting {{.ModelName}} ${entity.id}.`,
     });
 
-    formRecord.isNewRecord = true;
-    await formRecord.save();
+    {{.LowerModelName}}Record.isNewRecord = true;
+    await {{.LowerModelName}}Record.save();
 
     log.info({
-      message: `Inserted form ${entity.id}.`,
-      formRecord,
+      message: `Inserted {{.ModelName}} ${entity.id}.`,
+      {{.LowerModelName}}Record,
     });
   }
 
   /**
-   * Update a form into the DB.
+   * Update a {{.LowerModelName}} into the DB.
    */
-  async update(entity: FormEntity): Promise<void> {
-    const formRecord = this.formMapper.toPersistence(entity);
+  async update(entity: {{.ModelName}}Entity): Promise<void> {
+    const {{.LowerModelName}}Record = this.{{.LowerModelName}}Mapper.toPersistence(entity);
 
     log.info({
-      message: `Updating form ${entity.id}.`,
+      message: `Updating {{.ModelName}} ${entity.id}.`,
     });
 
-    formRecord.isNewRecord = false;
-    await formRecord.save();
+    {{.LowerModelName}}Record.isNewRecord = false;
+    await {{.LowerModelName}}Record.save();
 
     log.info({
-      message: `Updated form ${entity.id}.`,
-      formRecord,
+      message: `Updated {{.ModelName}} ${entity.id}.`,
+      {{.LowerModelName}}Record,
     });
   }
 
@@ -79,11 +77,11 @@ export default class FormRepository implements RepositoryPort<FormEntity> {
    * Check if a name already exists.
    */
   async existsByName(name: string): Promise<boolean> {
-    const formRecord = await FormModel.findOne({
+    const {{.LowerModelName}}Record = await {{.ModelName}}Model.findOne({
       attributes: ['id'],
       where: { name },
     });
 
-    return !!formRecord;
+    return !!{{.LowerModelName}}Record;
   }
 }
