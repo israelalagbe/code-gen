@@ -1,8 +1,10 @@
 import { Model, Table, Column, DataType, PrimaryKey, AllowNull, CreatedAt, UpdatedAt, ForeignKey, BelongsTo } from 'sequelize-typescript';
 
 interface I{{.ModelName}}Creation {
-  id: string;{{range .Properties}}
-  {{.Name}}: {{.Type}};{{end}}
+  id: string;
+  {{- range .Properties}}
+  {{.Name}}: {{.Type}};
+  {{- end}} 
   createdAt: Date;
   updatedAt: Date;
 }
@@ -20,7 +22,9 @@ export default class {{.ModelName}}Model extends Model<{{.ModelName}}Model, I{{.
     comment: 'Primary key',
   })
   declare id: string;
-  {{range .Properties}}
+
+  {{- range .Properties}}
+  
   @AllowNull(false)
   @Column({
     type: DataType.{{.DBTypeName}},
@@ -28,7 +32,8 @@ export default class {{.ModelName}}Model extends Model<{{.ModelName}}Model, I{{.
     comment: 'the {{.HumanizeName}} of the {{$.SentenceCaseName}}',
   })
   declare {{.Name}}: {{.Type}};
-  {{end}}
+  {{- end}}
+
   // Timestamps
 
   @CreatedAt

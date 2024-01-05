@@ -1,0 +1,53 @@
+import { Service } from 'typedi';
+import {{.ModelName}}Entity from '../entities/{{.HypenCaseName}}.entity';
+import { {{.ModelName}}Dto } from '../dto/{{.HypenCaseName}}.dto';
+import {{.ModelName}}Model from '../models/{{.HypenCaseName}}.model';
+import { Mapper } from '@shared/ddd/mapper.interface';
+
+@Service()
+export default class {{.ModelName}}Mapper implements Mapper<{{.ModelName}}Entity, {{.ModelName}}Model> {
+  /**
+   * Map a domain entity into DB records.
+   */
+  toPersistence(entity: {{.ModelName}}Entity): {{.ModelName}}Model {
+    const props = entity.getProps();
+
+    const record = {{.ModelName}}Model.build({
+      id: props.id,
+      {{- range .Properties}}
+      {{.Name}}: props.{{.Name}},
+      {{- end}} 
+      createdAt: props.createdAt,
+      updatedAt: props.updatedAt,
+    });
+
+    return record;
+  }
+
+  /**
+   * Map DB records into a domain entity.
+   */
+  toDomain(record: {{.ModelName}}Model): {{.ModelName}}Entity {
+    return new {{.ModelName}}Entity({
+      id: record.id,
+      {{- range .Properties}}
+      {{.Name}}: record.{{.Name}},
+      {{- end}} 
+      createdAt: record.createdAt,
+      updatedAt: record.updatedAt,
+    });
+  }
+
+  toResponse(entity: {{.ModelName}}Entity): {{.ModelName}}Dto {
+    const props = entity.getProps();
+
+    return {
+      id: entity.id,
+      {{- range .Properties}}
+      {{.Name}}: entity.{{.Name}},
+      {{- end}}
+      createdAt: props.createdAt.toISOString(),
+      updatedAt: props.updatedAt.toISOString(),
+    };
+  }
+}
