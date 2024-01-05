@@ -24,11 +24,13 @@ func main() {
 	questionModel := models.NewQuestionModel(targetDir)
 
 	questions = inquire.Query()
+
 	questions.Input(&questionModel.TableName, "Table name", validations.Required)
 	questions.Input(&questionModel.ModelName, "Model name", validations.Required)
 	questions.Input(&questionModel.Path, "Base directory", validations.Required)
 
 	fields := ""
+
 	questions.Input(&fields, "Fields", validations.Required)
 
 	questions.Exec()
@@ -57,6 +59,10 @@ func main() {
 			questions.Exec()
 		}
 
+		if !item.Included {
+			continue
+		}
+
 		if !libs.FileExists(path.Dir(absFilePath)) {
 			libs.CreateDirectory(path.Dir(absFilePath))
 		}
@@ -66,23 +72,23 @@ func main() {
 		for _, property := range questionModel.Properties {
 			dataType, dbType := utils.MapToDomainType(property.Type)
 			renderProperties = append(renderProperties, models.TemplateRenderDataProperty{
-				Name:       strcase.ToLowerCamel(property.Name),
-				ColumName:  strcase.ToSnake(property.Name),
-				Type:       dataType,
-				DBTypeName: dbType,
+				Name:         strcase.ToLowerCamel(property.Name),
+				HumanizeName: utils.Humanize(property.Name),
+				ColumName:    strcase.ToSnake(property.Name),
+				Type:         dataType,
+				DBTypeName:   dbType,
 			})
 		}
 
 		data := models.TemplateRenderData{
-			TableName:        questionModel.TableName,
-			ModelName:        strcase.ToCamel(questionModel.ModelName),
-			SnakeCaseName:    strcase.ToSnake(questionModel.ModelName),
-			HypenCaseName:    strcase.ToKebab(questionModel.ModelName),
-			SentenceCaseName: strings.ReplaceAll(strcase.ToSnake(questionModel.ModelName), "_", " "),
-			TitleSentenceCaseName: strings.ReplaceAll(strcase.ToSnake(
-				strcase.ToCamel(questionModel.ModelName),
-			), "_", " "),
-			Properties: renderProperties,
+			TableName:             questionModel.TableName,
+			ModelName:             strcase.ToCamel(questionModel.ModelName),
+			LowerModelName:        strcase.ToLowerCamel(questionModel.ModelName),
+			SnakeCaseName:         strcase.ToSnake(questionModel.ModelName),
+			HypenCaseName:         strcase.ToKebab(questionModel.ModelName),
+			SentenceCaseName:      utils.Humanize(questionModel.ModelName),
+			TitleSentenceCaseName: utils.HumanizeSentence(questionModel.ModelName),
+			Properties:            renderProperties,
 		}
 
 		result := libs.RenderTemplate(path.Join("templates", item.Name+".txt"), data)
