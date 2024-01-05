@@ -91,7 +91,7 @@ func main() {
 			Properties:            renderProperties,
 		}
 
-		result := libs.RenderTemplate(path.Join("templates", item.Name+".txt"), data)
+		result := libs.RenderTemplate(path.Join(defaultAppDir, "templates", item.Name+".txt"), data)
 
 		libs.WriteFile(absFilePath, result)
 	}
