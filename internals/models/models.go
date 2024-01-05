@@ -24,12 +24,28 @@ const (
 	MODE_APPEND
 )
 
+type TemplateRenderData struct {
+	TableName             string
+	ModelName             string
+	SnakeCaseName         string
+	HypenCaseName         string
+	SentenceCaseName      string
+	TitleSentenceCaseName string
+	Properties            []TemplateRenderDataProperty
+}
+
+type TemplateRenderDataProperty struct {
+	Name       string
+	ColumName  string
+	Type       string
+	DBTypeName string
+}
+
 func NewQuestionModel(path string) *QuestionModel {
 	items := []Item{
-		{Name: "repositories", Included: true, Path: "repositories/{{.TableName}}.go"},
+		// {Name: "repositories", Included: true, Path: "repositories/{{.ModelName}}.repository.ts"},
+		{Name: "models", Included: true, Path: "repositories/{{.ModelName}}.model.ts"},
 	}
 
 	return &QuestionModel{Items: items, Path: path, Properties: []Property{}}
 }
-
-func hello() {}

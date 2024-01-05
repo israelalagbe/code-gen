@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/burl/inquire"
+	"github.com/iancoleman/strcase"
 	"github.com/israelalagbe/code-gen/internals/libs"
 	"github.com/israelalagbe/code-gen/internals/models"
 	"github.com/israelalagbe/code-gen/internals/utils"
@@ -39,7 +40,7 @@ func main() {
 		questions.YesNo(&item.Included, "Include "+item.Name)
 		questions.Exec()
 
-		item.Path = strings.Replace(item.Path, "{{.TableName}}", questionModel.TableName, 1)
+		item.Path = strings.Replace(item.Path, "{{.ModelName}}", strcase.ToKebab(questionModel.ModelName), 1)
 		questionModel.Items[index] = item
 	}
 
@@ -60,9 +61,33 @@ func main() {
 			libs.CreateDirectory(path.Dir(absFilePath))
 		}
 
-		result := libs.RenderTemplate(path.Join("templates", item.Name+".txt"), questionModel)
+		renderProperties := []models.TemplateRenderDataProperty{}
 
-		libs.WriteFile(path.Join(targetDir, item.Path), result)
+		for _, property := range questionModel.Properties {
+			dataType, dbType := utils.MapToDomainType(property.Type)
+			renderProperties = append(renderProperties, models.TemplateRenderDataProperty{
+				Name:       strcase.ToLowerCamel(property.Name),
+				ColumName:  strcase.ToSnake(property.Name),
+				Type:       dataType,
+				DBTypeName: dbType,
+			})
+		}
+
+		data := models.TemplateRenderData{
+			TableName:        questionModel.TableName,
+			ModelName:        strcase.ToCamel(questionModel.ModelName),
+			SnakeCaseName:    strcase.ToSnake(questionModel.ModelName),
+			HypenCaseName:    strcase.ToKebab(questionModel.ModelName),
+			SentenceCaseName: strings.ReplaceAll(strcase.ToSnake(questionModel.ModelName), "_", " "),
+			TitleSentenceCaseName: strings.ReplaceAll(strcase.ToSnake(
+				strcase.ToCamel(questionModel.ModelName),
+			), "_", " "),
+			Properties: renderProperties,
+		}
+
+		result := libs.RenderTemplate(path.Join("templates", item.Name+".txt"), data)
+
+		libs.WriteFile(absFilePath, result)
 	}
 
 	fmt.Println(questionModel)

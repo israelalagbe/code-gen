@@ -1,0 +1,55 @@
+import { Model, Table, Column, DataType, PrimaryKey, AllowNull, CreatedAt, UpdatedAt, ForeignKey, BelongsTo } from 'sequelize-typescript';
+
+interface I{{.ModelName}}Creation {
+  id: string;{{range .Properties}}
+  {{.Name}}: {{.Type}};{{end}}
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+@Table({
+  tableName: '{{.TableName}}',
+  underscored: true,
+})
+export default class {{.ModelName}}Model extends Model<{{.ModelName}}Model, I{{.ModelName}}Creation> {
+  @PrimaryKey
+  @AllowNull(false)
+  @Column({
+    type: DataType.UUID,
+    field: 'id',
+    comment: 'Primary key',
+  })
+  declare id: string;
+
+  @AllowNull(false)
+  @Column({
+    type: DataType.STRING(255),
+    field: 'agent_id',
+    comment: 'The value of the template',
+  })
+  declare value: string;
+
+  @AllowNull(false)
+  @Column({
+    type: DataType.UUID,
+    field: 'case_id',
+    comment: 'The case id of the template.',
+  })
+  declare caseId: string;
+
+  @AllowNull(false)
+  @Column({
+    type: DataType.INTEGER,
+    field: 'position',
+    comment: 'The position of the template.',
+  })
+  declare position: number;
+
+  // Timestamps
+
+  @CreatedAt
+  declare createdAt: Date;
+
+  @UpdatedAt
+  declare updatedAt: Date;
+}
