@@ -8,6 +8,22 @@ import { RepositoryPort } from '@shared/ddd/repository.port';
 export default class {{.ModelName}}Repository implements RepositoryPort<{{.ModelName}}Entity> {
   constructor(private {{.LowerModelName}}Mapper: {{.ModelName}}Mapper) {}
 
+  async findAll(): Promise<{{.ModelName}}Entity[]> {
+    log.info({
+      message: 'Fetching all {{.SentenceCaseName}}s',
+    });
+
+    const records = await {{.ModelName}}.findAll();
+
+    const entities = records.map(record => this.{{.LowerModelName}}Mapper.toDomain(record));
+
+    log.info({
+      message: 'Fetched all {{.SentenceCaseName}}s',
+    });
+
+    return entities;
+  }
+
   async findOneById(id: string): Promise<{{.ModelName}}Entity | null> {
     log.info({
       message: `Finding {{.ModelName}} ${id}.`,
@@ -19,7 +35,7 @@ export default class {{.ModelName}}Repository implements RepositoryPort<{{.Model
 
     if (!record) {
       log.info({
-        message: `{{.ModelName}} ${id} not found.`,
+        message: `{{.SentenceCaseName}} ${id} not found.`,
       });
 
       return null;
@@ -28,7 +44,7 @@ export default class {{.ModelName}}Repository implements RepositoryPort<{{.Model
     const entity = this.{{.LowerModelName}}Mapper.toDomain(record);
 
     log.info({
-      message: `Found {{.ModelName}} ${id}.`,
+      message: `Found {{.SentenceCaseName}} ${id}.`,
       entity,
     });
 
@@ -42,15 +58,15 @@ export default class {{.ModelName}}Repository implements RepositoryPort<{{.Model
     const {{.LowerModelName}}Record = this.{{.LowerModelName}}Mapper.toPersistence(entity);
 
     log.info({
-      message: `Inserting {{.ModelName}} ${entity.id}.`,
+      message: `Inserting {{.SentenceCaseName}} ${entity.id}.`,
     });
 
     {{.LowerModelName}}Record.isNewRecord = true;
     await {{.LowerModelName}}Record.save();
 
     log.info({
-      message: `Inserted {{.ModelName}} ${entity.id}.`,
-      {{.LowerModelName}}Record,
+      message: `Inserted {{.SentenceCaseName}} ${entity.id}.`,
+      {{.SentenceCaseName}}Record,
     });
   }
 
@@ -61,14 +77,14 @@ export default class {{.ModelName}}Repository implements RepositoryPort<{{.Model
     const {{.LowerModelName}}Record = this.{{.LowerModelName}}Mapper.toPersistence(entity);
 
     log.info({
-      message: `Updating {{.ModelName}} ${entity.id}.`,
+      message: `Updating {{.SentenceCaseName}} ${entity.id}.`,
     });
 
     {{.LowerModelName}}Record.isNewRecord = false;
     await {{.LowerModelName}}Record.save();
 
     log.info({
-      message: `Updated {{.ModelName}} ${entity.id}.`,
+      message: `Updated {{.SentenceCaseName}} ${entity.id}.`,
       {{.LowerModelName}}Record,
     });
   }

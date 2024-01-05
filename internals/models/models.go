@@ -50,6 +50,7 @@ func NewQuestionModel(path string) *QuestionModel {
 		{Name: "mappers", Included: true, Path: "data/mappers/{{.ModelName}}.mapper.ts"},
 		{Name: "entities", Included: true, Path: "data/entities/{{.ModelName}}.entity.ts"},
 		{Name: "dto", Included: true, Path: "data/dto/{{.ModelName}}.dto.ts"},
+		{Name: "controllers", Included: true, Path: "controllers/{{.ModelName}}.controller.ts"},
 	}
 
 	return &QuestionModel{Items: items, Path: path, Properties: []Property{}}

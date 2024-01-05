@@ -14,6 +14,8 @@ func MapToDomainType(name string) (string, string) {
 		return "string", "DECIMAL"
 	case "text":
 		return "string", "TEXT"
+	case "email":
+		return "string", "EMAIL"
 	default:
 		return "string", "STRING"
 	}

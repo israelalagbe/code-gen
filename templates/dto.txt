@@ -1,12 +1,29 @@
 import { z } from 'zod';
+import { createZodDto } from '@abitia/zod-dto';
 
 export const {{.LowerModelName}}Schema = z.object({
   id: z.string(),
   {{- range .Properties}}
   {{.Name}}: z.{{.Type}}(),
-  {{- end}} 
+  {{- end}}
   createdAt: z.string().datetime(),
   updatedAt: z.string().datetime(),
 });
+
+export const create{{.ModelName}}Schema = {{.LowerModelName}}Schema.omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const update{{.ModelName}}Schema = {{.LowerModelName}}Schema.omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export class Create{{.ModelName}}Dto extends createZodDto(create{{.ModelName}}Schema) {}
+
+export class Update{{.ModelName}}Dto extends createZodDto(update{{.ModelName}}Schema) {}
 
 export type {{.ModelName}}Dto = z.infer<typeof {{.LowerModelName}}Schema>;
