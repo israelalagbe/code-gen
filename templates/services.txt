@@ -5,10 +5,10 @@ import { Profile } from '@shared/types';
 
 @Service()
 export default class {{.ModelName}}Service {
-  createFromDto(emailConfigDTO: Create{{.ModelName}}Dto, author: Profile): {{.ModelName}}Entity {
+  createFromDto({{.LowerModelName}}DTO: Create{{.ModelName}}Dto, author: Profile): {{.ModelName}}Entity {
     const entity = {{.ModelName}}Entity.create({
       {{- range .Properties}}
-      {{.Name}}: emailConfigDTO.{{.Name}},
+      {{.Name}}: {{.LowerModelName}}DTO.{{.Name}},
       {{- end}}
     });
     return entity;

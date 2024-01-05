@@ -37,7 +37,7 @@ export default class {{.ModelName}}Controller {
     const {{.LowerModelName}} = await this.{{.LowerModelName}}Repository.findOneById(id);
 
     if (!{{.LowerModelName}}) {
-      throw new NotFoundError(`Email {{.LowerModelName}} ${id} cannot be found.`);
+      throw new NotFoundError(`{{.SentenceCaseName}} ${id} cannot be found.`);
     }
 
     {{.LowerModelName}}.set(payload);

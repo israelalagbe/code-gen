@@ -1,7 +1,7 @@
 import { Service } from 'typedi';
 import {{.ModelName}}Mapper from '../mappers/{{.HypenCaseName}}.mapper';
 import {{.ModelName}}Entity from '../entities/{{.HypenCaseName}}.entity';
-import {{.ModelName}}Model from '../../models/{{.HypenCaseName}}.model';
+import {{.ModelName}}Model from '@app/sequelize/models/{{.HypenCaseName}}.model';
 import { RepositoryPort } from '@shared/ddd/repository.port';
 
 @Service()
