@@ -20,31 +20,15 @@ export default class {{.ModelName}}Model extends Model<{{.ModelName}}Model, I{{.
     comment: 'Primary key',
   })
   declare id: string;
-
+  {{range .Properties}}
   @AllowNull(false)
   @Column({
-    type: DataType.STRING(255),
-    field: 'agent_id',
-    comment: 'The value of the template',
+    type: DataType.{{.DBTypeName}},
+    field: '{{.ColumName}}',
+    comment: 'the {{.HumanizeName}} of the {{$.SentenceCaseName}}',
   })
-  declare value: string;
-
-  @AllowNull(false)
-  @Column({
-    type: DataType.UUID,
-    field: 'case_id',
-    comment: 'The case id of the template.',
-  })
-  declare caseId: string;
-
-  @AllowNull(false)
-  @Column({
-    type: DataType.INTEGER,
-    field: 'position',
-    comment: 'The position of the template.',
-  })
-  declare position: number;
-
+  declare {{.Name}}: {{.Type}};
+  {{end}}
   // Timestamps
 
   @CreatedAt

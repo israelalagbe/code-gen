@@ -35,16 +35,17 @@ type TemplateRenderData struct {
 }
 
 type TemplateRenderDataProperty struct {
-	Name       string
-	ColumName  string
-	Type       string
-	DBTypeName string
+	HumanizeName string
+	Name         string
+	ColumName    string
+	Type         string
+	DBTypeName   string
 }
 
 func NewQuestionModel(path string) *QuestionModel {
 	items := []Item{
 		// {Name: "repositories", Included: true, Path: "repositories/{{.ModelName}}.repository.ts"},
-		{Name: "models", Included: true, Path: "repositories/{{.ModelName}}.model.ts"},
+		{Name: "models", Included: true, Path: "models/{{.ModelName}}.model.ts"},
 	}
 
 	return &QuestionModel{Items: items, Path: path, Properties: []Property{}}
