@@ -8,7 +8,7 @@ export default class {{.ModelName}}Service {
   createFromDto({{.LowerModelName}}DTO: Create{{.ModelName}}Dto, author: Profile): {{.ModelName}}Entity {
     const entity = {{.ModelName}}Entity.create({
       {{- range .Properties}}
-      {{.Name}}: {{.LowerModelName}}DTO.{{.Name}},
+      {{.Name}}: {{$.LowerModelName}}DTO.{{.Name}},
       {{- end}}
     });
     return entity;
