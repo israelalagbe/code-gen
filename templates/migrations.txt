@@ -1,0 +1,51 @@
+const schema = process.env.DATABASE_SCHEMA ?? 'default_schema';
+const tableName = '{{.TableName}}';
+
+/** @type {import('sequelize-cli').Migration} */
+module.exports = {
+  async up(queryInterface, Sequelize) {
+    await queryInterface.sequelize.transaction(async transaction => {
+      await queryInterface.createTable(
+        { tableName, schema },
+        {
+          id: {
+            type: Sequelize.DataTypes.UUID,
+            primaryKey: true,
+            allowNull: false,
+            defaultValue: Sequelize.DataTypes.UUIDV4,
+            field: 'id',
+            comment: 'Primary key.',
+          },
+          {{- range .Properties}}
+          {{.ColumName}}: {
+            type: Sequelize.DataTypes.{{.DBTypeName}},
+            allowNull: false, // Adjust based on your model's requirements
+            field: '{{.ColumName}}',
+            comment: 'The {{.Name}} of the {{$.SentenceCaseName}}.',
+          },
+          {{- end}}
+          createdAt: {
+            allowNull: false,
+            type: Sequelize.DataTypes.DATE,
+            field: 'created_at',
+            defaultValue: Sequelize.fn('NOW'),
+            comment: 'Creation date of the record.',
+          },
+          updatedAt: {
+            allowNull: false,
+            type: Sequelize.DataTypes.DATE,
+            field: 'updated_at',
+            defaultValue: Sequelize.fn('NOW'),
+            comment: 'Update date of the record.',
+          },
+        },
+        { transaction },
+      );
+    });
+  },
+  async down(queryInterface, _Sequelize) {
+    await queryInterface.sequelize.transaction(async transaction => {
+      await queryInterface.dropTable({ tableName, schema }, { transaction });
+    });
+  },
+};

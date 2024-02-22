@@ -45,8 +45,9 @@ type TemplateRenderDataProperty struct {
 
 func NewQuestionModel(path string) *QuestionModel {
 	items := []Item{
-		{Name: "repositories", Included: true, Path: "data/repositories/{{.ModelName}}.repository.ts"},
+		{Name: "migrations", Included: true, Path: "migrations/{{.ModelName}}.ts"},
 		{Name: "models", Included: true, Path: "models/{{.ModelName}}.model.ts"},
+		{Name: "repositories", Included: true, Path: "data/repositories/{{.ModelName}}.repository.ts"},
 		{Name: "mappers", Included: true, Path: "data/mappers/{{.ModelName}}.mapper.ts"},
 		{Name: "entities", Included: true, Path: "data/entities/{{.ModelName}}.entity.ts"},
 		{Name: "dto", Included: true, Path: "data/dto/{{.ModelName}}.dto.ts"},
