@@ -19,7 +19,7 @@ module.exports = {
           {{- range .Properties}}
           {{.ColumName}}: {
             type: Sequelize.DataTypes.{{.DBTypeName}},
-            allowNull: false, // Adjust based on your model's requirements
+            allowNull: false,
             field: '{{.ColumName}}',
             comment: 'The {{.Name}} of the {{$.SentenceCaseName}}.',
           },
