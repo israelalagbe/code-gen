@@ -71,12 +71,21 @@ func main() {
 
 		for _, property := range questionModel.Properties {
 			dataType, dbType := utils.MapToDomainType(property.Type)
+			comment := "The " + strcase.ToSnake((property.Name)+" of the "+questionModel.ModelName+" table")
+
+			if property.Type == "uuid" {
+				foreignTableName := strings.TrimSuffix(property.Name, "_id")
+				foreignTableName = strings.TrimSuffix(foreignTableName, "id")
+				comment = "Foreign key to the " + foreignTableName + " table"
+			}
+
 			renderProperties = append(renderProperties, models.TemplateRenderDataProperty{
 				Name:         strcase.ToLowerCamel(property.Name),
 				HumanizeName: utils.Humanize(property.Name),
 				ColumName:    strcase.ToSnake(property.Name),
 				Type:         dataType,
 				DBTypeName:   dbType,
+				Comment:      comment,
 			})
 		}
 

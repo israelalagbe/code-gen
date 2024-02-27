@@ -51,51 +51,22 @@ export default class {{.ModelName}}Repository implements RepositoryPort<{{.Model
   }
 
   /**
-   * Insert a {{.ModelName}} into the DB.
-   */
-  async insert(entity: {{.ModelName}}Entity): Promise<void> {
-    const {{.LowerModelName}}Record = this.{{.LowerModelName}}Mapper.toPersistence(entity);
-
-    log.info({
-      message: `Inserting {{.SentenceCaseName}} ${entity.id}.`,
-    });
-
-    {{.LowerModelName}}Record.isNewRecord = true;
-    await {{.LowerModelName}}Record.save();
-
-    log.info({
-      message: `Inserted {{.SentenceCaseName}} ${entity.id}.`,
-    });
-  }
-
-  /**
-   * Update a {{.LowerModelName}} into the DB.
-   */
-  async update(entity: {{.ModelName}}Entity): Promise<void> {
-    const {{.LowerModelName}}Record = this.{{.LowerModelName}}Mapper.toPersistence(entity);
-
-    log.info({
-      message: `Updating {{.SentenceCaseName}} ${entity.id}.`,
-    });
-
-    {{.LowerModelName}}Record.isNewRecord = false;
-    await {{.LowerModelName}}Record.save();
-
-    log.info({
-      message: `Updated {{.SentenceCaseName}} ${entity.id}.`,
-    });
-  }
-
-  /**
    * Saves a {{.ModelName}} record to the DB.
    */
   async save(entity: {{.ModelName}}Entity): Promise<void> {
-    if (this.exists(entity.id)) {
-      return await this.update(entity);
-    }
-    else {
-      return await this.insert(entity);
-    }
+    const {{.LowerModelName}}Record = this.{{.LowerModelName}}Mapper.toPersistence(entity);
+
+    {{.LowerModelName}}Record.isNewRecord = !await this.exists(entity.id);
+
+    log.info({
+      message: `Saving {{.SentenceCaseName}} ${entity.id}.`,
+    });
+
+    await {{.LowerModelName}}Record.save();
+
+    log.info({
+      message: `Saved {{.SentenceCaseName}} ${entity.id}.`,
+    });
   }
 
   /**

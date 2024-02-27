@@ -17,11 +17,11 @@ module.exports = {
             comment: 'Primary key.',
           },
           {{- range .Properties}}
-          {{.ColumName}}: {
+          {{.Name}}: {
             type: Sequelize.DataTypes.{{.DBTypeName}},
             allowNull: false,
             field: '{{.ColumName}}',
-            comment: 'The {{.Name}} of the {{$.SentenceCaseName}}.',
+            comment: '{{.Comment}}',
           },
           {{- end}}
           createdAt: {

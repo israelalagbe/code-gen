@@ -29,7 +29,7 @@ export default class {{.ModelName}}Model extends Model<{{.ModelName}}Model, I{{.
   @Column({
     type: DataType.{{.DBTypeName}},
     field: '{{.ColumName}}',
-    comment: 'the {{.HumanizeName}} of the {{$.SentenceCaseName}}',
+    comment: '{{.Comment}}',
   })
   declare {{.Name}}: {{.Type}};
   {{- end}}

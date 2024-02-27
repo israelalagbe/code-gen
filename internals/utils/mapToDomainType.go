@@ -8,7 +8,7 @@ func MapToDomainType(name string) (string, string) {
 		return "number", "INTEGER"
 	case "float":
 		return "number", "FLOAT"
-	case "bool":
+	case "bool", "boolean":
 		return "boolean", "BOOLEAN"
 	case "decimal":
 		return "string", "DECIMAL"
@@ -16,6 +16,8 @@ func MapToDomainType(name string) (string, string) {
 		return "string", "TEXT"
 	case "email":
 		return "string", "EMAIL"
+	case "uuid":
+		return "string", "UUID"
 	default:
 		return "string", "STRING"
 	}

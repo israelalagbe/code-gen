@@ -41,6 +41,7 @@ type TemplateRenderDataProperty struct {
 	ColumName    string
 	Type         string
 	DBTypeName   string
+	Comment      string
 }
 
 func NewQuestionModel(path string) *QuestionModel {
